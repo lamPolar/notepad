@@ -2,21 +2,21 @@ import os
 import sys
 
 from PyQt5 import QtCore
-from PyQt5.QtGui import QIcon, QCursor, QFont
+from PyQt5.QtGui import QIcon, QCursor, QFont, QKeySequence
 from PyQt5.QtPrintSupport import QPrintDialog
 from PyQt5.QtWidgets import QApplication, QMainWindow, QAction, qApp, QFileDialog, QTextEdit, QHBoxLayout, QVBoxLayout, \
     QMessageBox, QFontDialog, QStatusBar, QLabel
 
 
 class QNotepad(QMainWindow):
-
     def __init__(self):
         super().__init__()
         self.resize(830, 450)
         self.setTitle()
         self.setWindowIcon(QIcon(os.path.join('image', 'notepad.jpg')))
         menubar = self.menuBar()
-       # elf.status.showMessage("{}%".format(self.size))
+
+        #상태바 생성
         self.status = QStatusBar()
         self.setStatusBar(self.status)
         self.size = 100
@@ -24,6 +24,7 @@ class QNotepad(QMainWindow):
         self.label.setAlignment(QtCore.Qt.AlignRight)
         self.status.addWidget(self.label,2)
 
+        #드롭다운 메뉴 구성
         Filemenu = menubar.addMenu("파일")
         Filemenu1 = menubar.addMenu("편집")
         Filemenu2 = menubar.addMenu("서식")
@@ -67,22 +68,7 @@ class QNotepad(QMainWindow):
         statusbar.setCheckable(True)
         statusbar.setChecked(True)
 
-        autoenter.triggered.connect(self.format_autoenter)
-        font.triggered.connect(self.format_font)
-        Filemenu2.addAction(autoenter)
-        Filemenu2.addAction(font)
-
-        zoomin.triggered.connect(self.view_zoomin)
-        zoomout.triggered.connect(self.view_zoomout)
-        statusbar.triggered.connect(self.view_status)
-        zoom.addAction(zoomin)
-        zoom.addAction(zoomout)
-        Filemenu3.addAction(statusbar)
-
-        info = QAction("메모장 정보", self)
-        info.triggered.connect(self.help_info)
-        Filemenu4.addAction(info)
-
+        #파일
         newfile.triggered.connect(self.file_new)
         openfile.triggered.connect(self.file_open)
         savefile.triggered.connect(self.file_save)
@@ -98,6 +84,7 @@ class QNotepad(QMainWindow):
         Filemenu.addSeparator()
         Filemenu.addAction(exit)
 
+        #편집
         undo.triggered.connect(self.edit_undo)
         redo.triggered.connect(self.edit_redo)
         cut.triggered.connect(self.edit_cut)
@@ -112,12 +99,30 @@ class QNotepad(QMainWindow):
         Filemenu1.addAction(copy)
         Filemenu1.addAction(paste)
         #Filemenu1.addAction(delete)
-        Filemenu1.addSeparator()
-        Filemenu1.addAction(find)
+        #Filemenu1.addSeparator()
+        #Filemenu1.addAction(find)
+
+        #서식
+        autoenter.triggered.connect(self.format_autoenter)
+        font.triggered.connect(self.format_font)
+        Filemenu2.addAction(autoenter)
+        Filemenu2.addAction(font)
+
+        #보기
+        zoomin.triggered.connect(self.view_zoomin)
+        zoomout.triggered.connect(self.view_zoomout)
+        statusbar.triggered.connect(self.view_status)
+        zoom.addAction(zoomin)
+        zoom.addAction(zoomout)
+        Filemenu3.addAction(statusbar)
+
+        #도움
+        info = QAction("메모장 정보", self)
+        info.triggered.connect(self.help_info)
+        Filemenu4.addAction(info)
 
         self.text1 = QTextEdit(self)
         self.text1.setAcceptRichText(True)
-        #self.buffer = ""
         self.text1.setLineWrapMode(0)
         self.text1.default_font = QFont()
         self.setCentralWidget(self.text1)
@@ -154,13 +159,8 @@ class QNotepad(QMainWindow):
         self.text1.paste()
     def edit_delete(self):
         pass
-        #self.text1.setText(self.text1.toPlainText())
-        #self.text1.clear()
     def edit_find(self):
         pass
-        #QFindDialog
-        #self.text1.find()
-
 
     def file_open(self):
         FileOpen = QFileDialog.getOpenFileName(self, '파일 열기', './')
@@ -221,9 +221,7 @@ class QNotepad(QMainWindow):
             self.text1.setCurrentFont(font)
 
     def closeEvent(self, event):
-        reply = QMessageBox.question(self, '메모장 종료', '저장하지 않고 종료하시겠습니까?',
-                                     QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-
+        reply = QMessageBox.question(self, '메모장 종료', '저장하지 않고 종료하시겠습니까?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if reply == QMessageBox.Yes:
             event.accept()
         else:
